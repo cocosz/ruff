@@ -1783,7 +1783,7 @@ mod tests {
         Rule::ClassAsDataStructure,
         Rule::TooManyPublicMethods,
         Rule::UnnecessaryEnumerate,
-        Rule::MathConstant,
+        Rule::ApproximateMathConstant,
         Rule::PreviewTestRule,
         Rule::MissingBlankLineBetweenMethods,
         Rule::MissingBlankLinesTopLevel,
