@@ -826,7 +826,7 @@ pub(crate) fn statement(stmt: &Stmt, checker: &mut Checker) {
                 if module != Some("__future__") && &alias.name == "*" {
                     // F403
                     checker.report_diagnostic_if_enabled(
-                        pyflakes::rules::UndefinedLocalWithImportStar {
+                        pyflakes::rules::StarImport {
                             name: helpers::format_import_from(level, module).to_string(),
                         },
                         stmt.range(),
