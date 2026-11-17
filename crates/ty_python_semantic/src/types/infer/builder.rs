@@ -6193,8 +6193,28 @@ impl<'db, 'ast> TypeInferenceBuilder<'db, 'ast> {
         };
 
         let expected_ty = call_expression_tcx.expected_type();
+        let return_matches_context = !narrow_targets.is_empty()
+            && expected_ty.is_some_and(|expected_ty| {
+                bindings.satisfies(|overload| {
+                    let inferable = overload
+                        .signature
+                        .generic_context
+                        .map(|generic_context| generic_context.inferable_typevars(db))
+                        .unwrap_or(TypeVarSet::None);
+
+                    !overload
+                        .return_ty
+                        .when_assignable_to(db, env, expected_ty, &constraints, inferable)
+                        .is_never_satisfied(db, env, inferable)
+                })
+            });
         let mut union_only_matches = Vec::new();
         let mut try_narrow = |target_ty: Type<'db>| {
+            // Short-circuit if no overload's return type can fit the full type context.
+            if !return_matches_context {
+                return None;
+            }
+
             // Preserve results that were already inferred directly in a previous round of iteration,
             // even if they aren't strictly compatible with a single member of the union, to avoid
             // unnecessary narrowing.
@@ -6210,22 +6230,6 @@ impl<'db, 'ast> TypeInferenceBuilder<'db, 'ast> {
             } else {
                 target_ty
             };
-
-            // Short-circuit if there is no overload with a matching return type.
-            if !bindings.satisfies(|overload| {
-                let inferable = overload
-                    .signature
-                    .generic_context
-                    .map(|generic_context| generic_context.inferable_typevars(db))
-                    .unwrap_or(TypeVarSet::None);
-
-                !overload
-                    .return_ty
-                    .when_assignable_to(db, env, compatible_ty, &constraints, inferable)
-                    .is_never_satisfied(db, env, inferable)
-            }) {
-                return None;
-            }
 
             let attempt = try_infer(call_expression_tcx.with_expected_type(Some(target_ty)))?;
             let return_ty = attempt.0.return_type(db, env);

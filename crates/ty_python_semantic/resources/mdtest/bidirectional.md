@@ -2295,6 +2295,16 @@ def _(value: Any):
     result: int | None = reveal_type(either(value, None))  # revealed: int | None
 ```
 
+The same applies when `None` is part of the function's return type:
+
+```py
+def first_or_none[T](items: list[T]) -> T | None:
+    raise NotImplementedError
+
+def _(value: Any):
+    x: int | None = reveal_type(first_or_none([value]))  # revealed: int | None
+```
+
 Elements that can use a narrowing target still contribute their contextual types, even when another
 element is incompatible with that target:
 
