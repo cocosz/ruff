@@ -68,7 +68,19 @@ pub(crate) fn bindings(checker: &Checker) {
                             binding,
                             checker.locator,
                         )
-                        .map(Fix::safe_edit)
+                        .map(|edit| {
+                            // Removing `as e` changes behavior if `e` shadows an existing
+                            // binding in the same scope: Python implicitly deletes `e` at the
+                            // end of the `except` block, but only when it was bound by it.
+                            if checker.semantic.scopes[binding.scope]
+                                .shadowed_binding(binding_id)
+                                .is_some()
+                            {
+                                Fix::unsafe_edit(edit)
+                            } else {
+                                Fix::safe_edit(edit)
+                            }
+                        })
                     });
             }
         }

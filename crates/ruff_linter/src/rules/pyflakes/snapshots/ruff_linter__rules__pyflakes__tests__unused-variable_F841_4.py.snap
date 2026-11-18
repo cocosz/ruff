@@ -1,0 +1,57 @@
+---
+source: crates/ruff_linter/src/rules/pyflakes/mod.rs
+---
+F841 [*] Local variable `e` is assigned to but never used
+ --> F841_4.py:7:33
+  |
+5 |     try:
+6 |         1 / 0
+7 |     except ZeroDivisionError as e:
+  |                                 ^
+8 |         pass
+9 |     print(e)
+  |
+help: Remove assignment to unused variable `e`
+  |
+6 |         1 / 0
+  -     except ZeroDivisionError as e:
+7 +     except ZeroDivisionError:
+8 |         pass
+  |
+note: This is an unsafe fix and may change runtime behavior
+
+F841 [*] Local variable `e` is assigned to but never used
+  --> F841_4.py:15:29
+   |
+13 | try:
+14 |     1 / 0
+15 | except ZeroDivisionError as e:
+   |                             ^
+16 |     pass
+17 | print(e)
+   |
+help: Remove assignment to unused variable `e`
+   |
+14 |     1 / 0
+   - except ZeroDivisionError as e:
+15 + except ZeroDivisionError:
+16 |     pass
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+F841 [*] Local variable `e` is assigned to but never used
+  --> F841_4.py:24:33
+   |
+22 |     try:
+23 |         1 / 0
+24 |     except ZeroDivisionError as e:
+   |                                 ^
+25 |         pass
+   |
+help: Remove assignment to unused variable `e`
+   |
+23 |         1 / 0
+   -     except ZeroDivisionError as e:
+24 +     except ZeroDivisionError:
+25 |         pass
+   |

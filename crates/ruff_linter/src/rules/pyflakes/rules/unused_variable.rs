@@ -42,7 +42,10 @@ use crate::{Edit, Fix, FixAvailability, Violation};
 /// ## Fix safety
 ///
 /// This rule's fix is marked as unsafe because removing an unused variable assignment may
-/// delete comments that are attached to the assignment.
+/// delete comments that are attached to the assignment. The fix for an unused exception
+/// binding (e.g., `except ValueError as e`) is also marked as unsafe when the name shadows an
+/// existing binding in the same scope, since removing the binding changes whether that existing
+/// binding is deleted at the end of the `except` block.
 ///
 /// ## See also
 ///

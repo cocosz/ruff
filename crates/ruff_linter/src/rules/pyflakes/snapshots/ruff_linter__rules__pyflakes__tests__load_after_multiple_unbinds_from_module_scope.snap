@@ -34,3 +34,4 @@ help: Remove assignment to unused variable `x`
 12 +     except ValueError:
 13 |         pass
    |
+note: This is an unsafe fix and may change runtime behavior
